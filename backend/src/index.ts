@@ -1,15 +1,14 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import pkg from '@prisma/client';
-const { PrismaClient } = pkg;
+import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
 dotenv.config();
 
 const app = express();
-const prisma = new PrismaClient({});
+const prisma = new PrismaClient();
 const PORT = process.env.PORT || 5010;
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-key-change-me';
 
