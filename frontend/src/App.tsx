@@ -237,7 +237,7 @@ export default function App() {
 
 
   // System Date and Financial Period State
-  const [currentDate, setCurrentDate] = useState('2026-06-25');
+  const [currentDate, setCurrentDate] = useState(() => new Date().toLocaleDateString('en-CA'));
   const [currentPeriodStart, setCurrentPeriodStart] = useState('2026-04-01');
   const [currentPeriodEnd, setCurrentPeriodEnd] = useState('2027-03-31');
 
@@ -246,7 +246,7 @@ export default function App() {
   const [showChangePeriod, setShowChangePeriod] = useState(false);
 
   // Temporary modal inputs
-  const [tempDate, setTempDate] = useState('2026-06-25');
+  const [tempDate, setTempDate] = useState(() => new Date().toLocaleDateString('en-CA'));
   const [tempPeriodStart, setTempPeriodStart] = useState('2026-04-01');
   const [tempPeriodEnd, setTempPeriodEnd] = useState('2027-03-31');
 
