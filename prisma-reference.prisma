@@ -1,0 +1,377 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Company {
+  id                  String   @id @default(uuid())
+  name                String
+  mailingName         String?
+  address             String?
+  state               String?
+  country             String?
+  pincode             String?
+  phone               String?
+  email               String?
+  financialYearFrom   DateTime
+  booksBeginningFrom  DateTime
+  currencySymbol      String   @default("₹")
+  createdAt           DateTime @default(now())
+
+  ledgers         Ledger[]
+  vouchers        Voucher[]
+  stockItems      StockItem[]
+  accountGroups     AccountGroup[]
+  itemGroups        ItemGroup[]
+  customers         Customer[]
+  salesInvoices     SalesInvoice[]
+  salesGroups       SalesGroup[]
+  suppliers         Supplier[]
+  purchaseInvoices  PurchaseInvoice[]
+}
+
+model AccountGroup {
+  id          String   @id @default(uuid())
+  name        String
+  companyId   String
+  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  parentId    String?
+  parent      AccountGroup? @relation("GroupHierarchy", fields: [parentId], references: [id])
+  subGroups   AccountGroup[] @relation("GroupHierarchy")
+  groupType   String   // "Asset" | "Liability" | "Income" | "Expense"
+
+  ledgers     Ledger[]
+
+  @@unique([companyId, name])
+}
+
+model Ledger {
+  id             String        @id @default(uuid())
+  name           String
+  companyId      String
+  company        Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  groupId        String
+  group          AccountGroup  @relation(fields: [groupId], references: [id])
+  openingBalance Float         @default(0.0)
+  balanceType    String        @default("Dr") // "Dr" or "Cr"
+  createdAt      DateTime      @default(now())
+  
+  // Party details
+  contactPerson  String?
+  phone          String?
+  email          String?
+  address        String?
+  city           String?
+  state          String?
+  pincode        String?
+  gstin          String?
+  panNo          String?
+
+  entries        LedgerEntry[]
+
+  @@unique([companyId, name])
+}
+
+model Voucher {
+  id            String        @id @default(uuid())
+  companyId     String
+  company       Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  voucherType   String        // "CONTRA" | "PAYMENT" | "RECEIPT" | "JOURNAL" | "SALES" | "PURCHASE"
+  voucherNumber String
+  date          DateTime
+  referenceNo   String?
+  narration     String?
+  createdAt     DateTime      @default(now())
+
+  entries       LedgerEntry[]
+  inventory     InventoryEntry[]
+
+  @@unique([companyId, voucherType, voucherNumber])
+}
+
+model LedgerEntry {
+  id        String   @id @default(uuid())
+  voucherId String
+  voucher   Voucher  @relation(fields: [voucherId], references: [id], onDelete: Cascade)
+  ledgerId  String
+  ledger    Ledger   @relation(fields: [ledgerId], references: [id])
+  amount    Float    // Always positive
+  entryType String   // "Dr" | "Cr"
+  
+  // Bill-wise details (for party ledgers)
+  billDetails BillDetail?
+  
+  // For tracking bill settlements
+  settledBy   BillSettlement[] @relation("SettledByEntry")
+  settles     BillSettlement[] @relation("SettlesEntry")
+}
+
+// Track each bill separately (like Tally bill-wise details)
+model BillDetail {
+  id            String   @id @default(uuid())
+  ledgerEntryId String   @unique
+  ledgerEntry   LedgerEntry @relation(fields: [ledgerEntryId], references: [id], onDelete: Cascade)
+  
+  billNo        String
+  billDate      DateTime
+  billAmount    Float
+  
+  // Track how much of this bill has been settled
+  settlements   BillSettlement[] @relation("BillSettlements")
+  
+  createdAt     DateTime @default(now())
+}
+
+// Track settlements/payments against bills
+model BillSettlement {
+  id              String   @id @default(uuid())
+  
+  // The bill being settled
+  billDetailId    String
+  billDetail      BillDetail @relation("BillSettlements", fields: [billDetailId], references: [id], onDelete: Cascade)
+  
+  // The payment entry (from Receipt/Payment voucher)
+  paymentEntryId  String
+  paymentEntry    LedgerEntry @relation("SettledByEntry", fields: [paymentEntryId], references: [id], onDelete: Cascade)
+  
+  // The original bill entry (credit entry)
+  billEntryId     String
+  billEntry       LedgerEntry @relation("SettlesEntry", fields: [billEntryId], references: [id])
+  
+  settledAmount   Float
+  settlementDate  DateTime
+  
+  createdAt       DateTime @default(now())
+}
+
+model StockItem {
+  id           String           @id @default(uuid())
+  name         String
+  aliasCode    String?          // Alias name or code for quick search
+  sku          String?          // Product SKU
+  description  String?
+  make         String?          @default("") // Brand / Manufacturer details
+  companyId    String
+  company      Company          @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  itemGroupId  String           // Item Group (required)
+  itemGroup    ItemGroup        @relation(fields: [itemGroupId], references: [id], onDelete: Restrict)
+  uom          String           // Unit of Measure, e.g., "Pcs", "Kgs"
+  salePrice    Float            @default(0)  // Selling price
+  purchasePrice Float           @default(0)  // Cost price
+  discount     Float            @default(0)  // Default discount percentage
+  openingQty   Float            @default(0)
+  openingRate  Float            @default(0)
+  openingValue Float            @default(0)
+  createdAt    DateTime         @default(now())
+
+  inventoryEntries      InventoryEntry[]
+  invoiceLineItems      InvoiceLineItem[]
+  purchaseLineItems     PurchaseLineItem[]
+
+  @@unique([companyId, name])
+}
+
+model InventoryEntry {
+  id          String    @id @default(uuid())
+  voucherId   String
+  voucher     Voucher   @relation(fields: [voucherId], references: [id], onDelete: Cascade)
+  stockItemId String
+  stockItem   StockItem @relation(fields: [stockItemId], references: [id])
+  qty         Float
+  rate        Float
+  amount      Float
+  entryType   String    @default("In") // "In" for PURCHASE, "Out" for SALES
+}
+
+model ItemGroup {
+  id            String   @id @default(uuid())
+  name          String
+  companyId     String
+  company       Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  description   String?
+  hsn           String?  // HSN Code for GST
+  
+  stockItems    StockItem[]
+  createdAt     DateTime @default(now())
+  
+  @@unique([companyId, name])
+}
+
+model Customer {
+  id            String   @id @default(uuid())
+  name          String
+  email         String?
+  phone         String?
+  address       String?
+  city          String?
+  state         String?
+  gstin         String?  // GST Registration Number
+  companyId     String
+  company       Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdAt     DateTime @default(now())
+  
+  invoices      SalesInvoice[]
+  
+  @@unique([companyId, name])
+}
+
+model SalesGroup {
+  id            String   @id @default(uuid())
+  name          String
+  companyId     String
+  company       Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  description   String?
+  salesAccountId String?  // Link to Sales Ledger Account
+  
+  invoices      SalesInvoice[]
+  createdAt     DateTime @default(now())
+  
+  @@unique([companyId, name])
+}
+
+model SalesInvoice {
+  id            String   @id @default(uuid())
+  invoiceNo     String
+  invoiceDate   DateTime
+  companyId     String
+  company       Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  customerId    String
+  customer      Customer @relation(fields: [customerId], references: [id])
+  salesGroupId  String?
+  salesGroup    SalesGroup? @relation(fields: [salesGroupId], references: [id])
+  
+  subtotal            Float    @default(0)
+  taxAmount           Float    @default(0)
+  discount            Float    @default(0)
+  additionalDiscount  Float    @default(0)
+  packagingCharge     Float    @default(0)
+  transportCharge     Float    @default(0)
+  roundOff            Float    @default(0)
+  totalAmount         Float    @default(0)
+  
+  paymentStatus String   @default("Pending") // Pending, Partial, Paid
+  paymentMode   String?  // Cash, Card, Cheque, Bank Transfer
+  
+  notes         String?
+  createdAt     DateTime @default(now())
+  
+  items         InvoiceLineItem[]
+  payments      InvoicePayment[]
+  
+  @@unique([companyId, invoiceNo])
+}
+
+model InvoiceLineItem {
+  id            String   @id @default(uuid())
+  invoiceId     String
+  invoice       SalesInvoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  stockItemId   String
+  stockItem     StockItem @relation(fields: [stockItemId], references: [id])
+  
+  qty           Float
+  rate          Float
+  discount      Float    @default(0)
+  taxRate       Float    @default(0)
+  lineAmount    Float
+  
+  createdAt     DateTime @default(now())
+}
+
+model InvoicePayment {
+  id            String   @id @default(uuid())
+  invoiceId     String
+  invoice       SalesInvoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  
+  amountPaid    Float
+  paymentMode   String   // Cash, Card, Cheque, Bank Transfer
+  paymentDate   DateTime
+  referenceNo   String?
+  notes         String?
+  
+  createdAt     DateTime @default(now())
+}
+
+// ===== SUPPLIER / VENDOR MANAGEMENT =====
+
+model Supplier {
+  id            String   @id @default(uuid())
+  name          String
+  email         String?
+  phone         String?
+  address       String?
+  city          String?
+  state         String?
+  gstin         String?  // GST Registration Number
+  panNo         String?
+  companyId     String
+  company       Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdAt     DateTime @default(now())
+  
+  purchaseInvoices  PurchaseInvoice[]
+  
+  @@unique([companyId, name])
+}
+
+model PurchaseInvoice {
+  id            String   @id @default(uuid())
+  invoiceNo     String
+  invoiceDate   DateTime
+  companyId     String
+  company       Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  supplierId    String
+  supplier      Supplier @relation(fields: [supplierId], references: [id])
+  
+  subtotal            Float    @default(0)
+  taxAmount           Float    @default(0)
+  discount            Float    @default(0)
+  additionalDiscount  Float    @default(0)
+  packagingCharge     Float    @default(0)
+  transportCharge     Float    @default(0)
+  roundOff            Float    @default(0)
+  totalAmount         Float    @default(0)
+  
+  paymentStatus String   @default("Pending") // Pending, Partial, Paid
+  paymentMode   String?  // Cash, Card, Cheque, Bank Transfer
+  
+  notes         String?
+  createdAt     DateTime @default(now())
+  
+  items         PurchaseLineItem[]
+  payments      PurchasePayment[]
+  
+  @@unique([companyId, invoiceNo])
+}
+
+model PurchaseLineItem {
+  id            String   @id @default(uuid())
+  invoiceId     String
+  invoice       PurchaseInvoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  stockItemId   String
+  stockItem     StockItem @relation(fields: [stockItemId], references: [id])
+  
+  qty           Float
+  rate          Float
+  discount      Float    @default(0)
+  taxRate       Float    @default(0)
+  lineAmount    Float
+  
+  createdAt     DateTime @default(now())
+}
+
+model PurchasePayment {
+  id            String   @id @default(uuid())
+  invoiceId     String
+  invoice       PurchaseInvoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  
+  amountPaid    Float
+  paymentMode   String   // Cash, Card, Cheque, Bank Transfer
+  paymentDate   DateTime
+  referenceNo   String?
+  notes         String?
+  
+  createdAt     DateTime @default(now())
+}

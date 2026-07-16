@@ -1,0 +1,1839 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Tally Retro Teal Color Palette - Sleek Modern adaptation */
+  --tally-bg-dark: #071f1b;
+  --tally-bg-mid: #00332c;
+  --tally-bg-light: #004d40;
+  --tally-bg-glass: rgba(0, 77, 64, 0.7);
+  --tally-border: #00796b;
+  --tally-border-light: #005b50;
+  --tally-accent: #ffeb3b;     /* Yellow for highlighted text */
+  --tally-hotkey: #ff5252;     /* Red for hotkey characters */
+  --tally-text-primary: #e0f2f1;
+  --tally-text-secondary: #80cbc4;
+  --tally-text-white: #ffffff;
+  --tally-header-bg: #004d40;
+  --tally-footer-bg: #002520;
+  --tally-selected: #00897b;
+  
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', Courier, monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--tally-bg-dark);
+  color: var(--tally-text-primary);
+  font-family: var(--font-sans);
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+input, select, textarea, button {
+  font-family: var(--font-sans);
+  background: var(--tally-bg-dark);
+  color: var(--tally-text-primary);
+  border: 1px solid var(--tally-border-light);
+  padding: 6px 12px;
+  outline: none;
+  font-size: 14px;
+  border-radius: 4px;
+  transition: all 0.2s ease-in-out;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--tally-accent);
+  box-shadow: 0 0 8px rgba(255, 235, 59, 0.25);
+}
+
+button {
+  cursor: pointer;
+  background-color: var(--tally-bg-light);
+  border-color: var(--tally-border);
+  font-weight: 500;
+}
+
+button:hover {
+  background-color: var(--tally-selected);
+  color: var(--tally-text-white);
+}
+
+/* Master Layout Grid */
+.tally-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  background: linear-gradient(135deg, var(--tally-bg-dark) 0%, #031512 100%);
+}
+
+/* Top Header Bar */
+.tally-header {
+  height: 35px;
+  background-color: var(--tally-header-bg);
+  border-bottom: 2px solid var(--tally-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 15px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--tally-text-white);
+  letter-spacing: 0.5px;
+}
+
+.tally-logo-text {
+  color: var(--tally-accent);
+  margin-right: 15px;
+  font-weight: 700;
+}
+
+/* Work Area Split (Left & Right) */
+.tally-body {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+/* Left Pane (Company info) */
+.tally-left-pane {
+  width: 35%;
+  border-right: 2px solid var(--tally-border);
+  background-color: rgba(0, 37, 32, 0.7);
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  font-size: 13px;
+  overflow-y: auto;
+}
+
+.company-info-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.company-info-table th {
+  text-align: left;
+  border-bottom: 1px solid var(--tally-border-light);
+  padding: 8px 4px;
+  color: var(--tally-text-secondary);
+}
+
+.company-info-table td {
+  padding: 8px 4px;
+  color: var(--tally-text-white);
+}
+
+.info-highlight {
+  color: var(--tally-accent);
+  font-weight: 600;
+}
+
+/* Right Pane (Menu / Input Form Area) */
+.tally-right-pane {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+/* Tally Menu Card (Standard Gateway of Tally) */
+.tally-menu-card {
+  width: 420px;
+  background: var(--tally-bg-glass);
+  border: 2px solid var(--tally-border);
+  border-radius: 6px;
+  box-shadow: 0 12px 30px var(--tally-shadow);
+  backdrop-filter: blur(8px);
+  overflow: hidden;
+}
+
+.tally-menu-title {
+  background-color: var(--tally-border);
+  padding: 8px 15px;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  color: var(--tally-text-white);
+  letter-spacing: 1px;
+}
+
+.tally-menu-list {
+  list-style: none;
+  padding: 10px 0;
+}
+
+.tally-menu-item {
+  padding: 10px 25px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.15s ease;
+}
+
+.tally-menu-item:hover, .tally-menu-item.selected {
+  background-color: var(--tally-selected);
+  color: var(--tally-accent);
+}
+
+.hotkey-letter {
+  color: var(--tally-hotkey);
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.selected .hotkey-letter {
+  color: var(--tally-accent);
+}
+
+/* Ledger & Stock Forms */
+.tally-form-card {
+  width: 650px;
+  background: var(--tally-bg-glass);
+  border: 2px solid var(--tally-border);
+  border-radius: 6px;
+  padding: 25px;
+  box-shadow: 0 12px 30px var(--tally-shadow);
+  backdrop-filter: blur(8px);
+}
+
+.tally-form-title {
+  border-bottom: 2px solid var(--tally-border);
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  font-size: 18px;
+  color: var(--tally-accent);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 15px;
+  align-items: center;
+}
+
+.form-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--tally-text-secondary);
+}
+
+/* Voucher Entry System */
+.voucher-panel {
+  width: 100%;
+  max-width: 950px;
+  background: var(--tally-bg-glass);
+  border: 2px solid var(--tally-border);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  height: 90%;
+  box-shadow: 0 12px 30px var(--tally-shadow);
+  backdrop-filter: blur(8px);
+}
+
+.voucher-header {
+  background-color: var(--tally-border);
+  padding: 10px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+}
+
+.voucher-type-indicator {
+  font-size: 16px;
+  color: var(--tally-accent);
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.voucher-body {
+  flex: 1;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.voucher-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 15px;
+}
+
+.voucher-table th {
+  border-bottom: 2px solid var(--tally-border);
+  padding: 8px;
+  text-align: left;
+  font-size: 13px;
+  color: var(--tally-text-secondary);
+}
+
+.voucher-table td {
+  padding: 6px 4px;
+  border-bottom: 1px solid var(--tally-border-light);
+}
+
+.voucher-input-row select, .voucher-input-row input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.voucher-total-row {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 15px;
+  border-top: 2px solid var(--tally-border);
+  border-bottom: 2px double var(--tally-border);
+}
+
+.voucher-total-row td {
+  padding: 10px 4px;
+  color: var(--tally-accent);
+}
+
+.voucher-narration {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-top: 1px solid var(--tally-border-light);
+  padding-top: 12px;
+}
+
+.narration-input {
+  flex: 1;
+  background: rgba(0,0,0,0.2);
+}
+
+/* Reports Tables */
+.tally-report-card {
+  width: 100%;
+  max-width: 900px;
+  background: var(--tally-bg-glass);
+  border: 2px solid var(--tally-border);
+  border-radius: 6px;
+  padding: 20px;
+  box-shadow: 0 12px 30px var(--tally-shadow);
+  backdrop-filter: blur(8px);
+  height: 90%;
+  display: flex;
+  flex-direction: column;
+}
+
+.report-header {
+  border-bottom: 2px solid var(--tally-border);
+  padding-bottom: 12px;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.report-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--tally-accent);
+  text-transform: uppercase;
+}
+
+.report-table-container {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.report-table th {
+  border-bottom: 2px solid var(--tally-border);
+  padding: 8px;
+  font-size: 13px;
+  color: var(--tally-text-secondary);
+}
+
+.report-table td {
+  padding: 8px;
+  border-bottom: 1px solid var(--tally-border-light);
+  font-size: 14px;
+}
+
+.amount-col {
+  text-align: right;
+  font-family: var(--font-mono);
+}
+
+.bold-row {
+  font-weight: 700;
+  color: var(--tally-text-white);
+}
+
+.total-row {
+  font-weight: 700;
+  color: var(--tally-accent);
+  border-top: 2px solid var(--tally-border);
+  border-bottom: 2px double var(--tally-border);
+}
+
+/* Footer Hint Bar */
+.tally-footer {
+  height: 35px;
+  background-color: var(--tally-footer-bg);
+  border-top: 2px solid var(--tally-border);
+  display: flex;
+  align-items: center;
+  padding: 0 15px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.footer-btn {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 6px 12px;
+  background-color: var(--tally-bg-light);
+  border: 1px solid var(--tally-border-light);
+  margin-right: 10px;
+  border-radius: 3px;
+  color: var(--tally-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.footer-btn span {
+  color: var(--tally-accent);
+  margin-right: 4px;
+  font-weight: 700;
+}
+
+.footer-btn:hover {
+  background-color: var(--tally-selected);
+  color: var(--tally-text-white);
+  border-color: var(--tally-accent);
+  box-shadow: 0 0 8px rgba(255, 235, 59, 0.2);
+}
+
+.footer-btn:active {
+  transform: scale(0.95);
+}
+
+.footer-btn-active {
+  background-color: var(--tally-accent) !important;
+  color: #000 !important;
+  border-color: var(--tally-accent) !important;
+  box-shadow: 0 0 10px rgba(255, 235, 59, 0.35) !important;
+}
+
+.footer-btn-active span {
+  color: #004d40 !important;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--tally-bg-dark);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--tally-border-light);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--tally-border);
+}
+
+/* ===== TALLY ERP 9 INVOICE STYLES ===== */
+
+/* Invoice Header Fields Layout */
+.invoice-header-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 24px;
+  margin-bottom: 20px;
+  padding: 14px 16px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--tally-border-light);
+  border-radius: 6px;
+}
+
+.invoice-header-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.invoice-header-field label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--tally-text-secondary);
+  min-width: 85px;
+  white-space: nowrap;
+}
+
+.invoice-header-field .field-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--tally-accent);
+  font-family: var(--font-mono);
+  letter-spacing: 1px;
+}
+
+.invoice-header-field input {
+  flex: 1;
+  padding: 5px 10px;
+  font-size: 13px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Party Autocomplete Container */
+.party-autocomplete-wrapper {
+  position: relative;
+  flex: 1;
+}
+
+.party-autocomplete-wrapper input {
+  width: 100%;
+  padding: 7px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--tally-border-light);
+  transition: all 0.2s ease;
+}
+
+.party-autocomplete-wrapper input:focus {
+  border-color: var(--tally-accent);
+  box-shadow: 0 0 12px rgba(255, 235, 59, 0.3);
+}
+
+.party-autocomplete-dropdown {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  right: 0;
+  max-height: 240px;
+  overflow-y: auto;
+  background: var(--tally-bg-mid);
+  border: 2px solid var(--tally-border);
+  border-radius: 0 0 6px 6px;
+  z-index: 1000;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  animation: slideDown 0.15s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.party-autocomplete-item {
+  padding: 8px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(0, 121, 107, 0.3);
+  transition: background 0.1s ease;
+}
+
+.party-autocomplete-item:last-child {
+  border-bottom: none;
+}
+
+.party-autocomplete-item:hover,
+.party-autocomplete-item.highlighted {
+  background: var(--tally-selected);
+  color: var(--tally-text-white);
+}
+
+.party-autocomplete-item .party-name {
+  font-weight: 600;
+  color: var(--tally-text-primary);
+}
+
+.party-autocomplete-item.highlighted .party-name {
+  color: var(--tally-accent);
+}
+
+.party-autocomplete-item .party-meta {
+  font-size: 11px;
+  color: var(--tally-text-secondary);
+}
+
+.party-autocomplete-item.highlighted .party-meta {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.party-autocomplete-item.create-new {
+  color: #4caf50;
+  font-weight: 600;
+  border-top: 2px solid var(--tally-border);
+  padding: 10px 14px;
+}
+
+.party-autocomplete-item.create-new:hover,
+.party-autocomplete-item.create-new.highlighted {
+  background: rgba(76, 175, 80, 0.2);
+  color: #81c784;
+}
+
+.party-autocomplete-item .match-highlight {
+  color: var(--tally-accent);
+  font-weight: 700;
+}
+
+/* Party Details Panel */
+.party-details-panel {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px 16px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  background: rgba(0, 77, 64, 0.25);
+  border: 1px solid var(--tally-border-light);
+  border-left: 3px solid var(--tally-accent);
+  border-radius: 4px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.party-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.party-detail-item .detail-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--tally-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.party-detail-item .detail-value {
+  font-size: 13px;
+  color: var(--tally-text-primary);
+  font-weight: 500;
+}
+
+.party-detail-item .detail-value.accent {
+  color: var(--tally-accent);
+  font-weight: 700;
+}
+
+/* Inline New Party Form */
+.new-party-inline-form {
+  padding: 16px;
+  margin-bottom: 16px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 2px solid #4caf50;
+  border-radius: 6px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.new-party-inline-form .form-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #81c784;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.new-party-inline-form .form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 16px;
+}
+
+.new-party-inline-form .form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.new-party-inline-form .form-field.full-width {
+  grid-column: 1 / -1;
+}
+
+.new-party-inline-form .form-field label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--tally-text-secondary);
+  text-transform: uppercase;
+}
+
+.new-party-inline-form .form-field input {
+  padding: 6px 10px;
+  font-size: 13px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.new-party-inline-form .form-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  justify-content: flex-end;
+}
+
+.new-party-inline-form .btn-save {
+  padding: 7px 18px;
+  background: #4caf50;
+  color: #fff;
+  border: none;
+  font-weight: 700;
+  font-size: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.new-party-inline-form .btn-save:hover {
+  background: #66bb6a;
+}
+
+.new-party-inline-form .btn-cancel {
+  padding: 7px 18px;
+  background: transparent;
+  color: var(--tally-text-secondary);
+  border: 1px solid var(--tally-border-light);
+  font-size: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.new-party-inline-form .btn-cancel:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--tally-text-primary);
+}
+
+/* Item autocomplete for stock items */
+.item-autocomplete-wrapper {
+  position: relative;
+}
+
+.item-autocomplete-dropdown {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  right: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  background: var(--tally-bg-mid);
+  border: 2px solid var(--tally-border);
+  border-radius: 0 0 6px 6px;
+  z-index: 999;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  animation: slideDown 0.15s ease-out;
+}
+
+.item-autocomplete-item {
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(0, 121, 107, 0.3);
+  transition: background 0.1s ease;
+}
+
+.item-autocomplete-item:hover,
+.item-autocomplete-item.highlighted {
+  background: var(--tally-selected);
+  color: var(--tally-text-white);
+}
+
+.item-autocomplete-item .item-name {
+  font-weight: 600;
+}
+
+.item-autocomplete-item.highlighted .item-name {
+  color: var(--tally-accent);
+}
+
+.item-autocomplete-item .item-details {
+  font-size: 10px;
+  color: var(--tally-text-secondary);
+  text-align: right;
+}
+
+/* ===== PARTY LEDGER STYLES ===== */
+
+/* Party Ledger Container */
+.party-ledger-container {
+  width: 100%;
+  max-width: 1050px;
+  height: 90%;
+  background: var(--tally-bg-glass);
+  border: 2px solid var(--tally-border);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  overflow: hidden;
+}
+
+.party-ledger-header {
+  background-color: var(--tally-border);
+  padding: 10px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.party-ledger-header .title {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--tally-accent);
+  letter-spacing: 0.5px;
+}
+
+.party-ledger-header .subtitle {
+  font-size: 11px;
+  color: var(--tally-text-secondary);
+}
+
+.party-ledger-body {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Summary Bar (Opening/Closing Balance) */
+.ledger-summary-bar {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--tally-border-light);
+  border-radius: 6px;
+  gap: 16px;
+}
+
+.ledger-summary-bar .summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ledger-summary-bar .summary-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--tally-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ledger-summary-bar .summary-value {
+  font-size: 16px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+
+.ledger-summary-bar .summary-value.dr {
+  color: #ef5350;
+}
+
+.ledger-summary-bar .summary-value.cr {
+  color: #66bb6a;
+}
+
+.ledger-summary-bar .summary-value.accent {
+  color: var(--tally-accent);
+}
+
+/* Party List Table */
+.party-list-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.party-list-table th {
+  border-bottom: 2px solid var(--tally-border);
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--tally-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.party-list-table td {
+  padding: 10px;
+  border-bottom: 1px solid var(--tally-border-light);
+  font-size: 13px;
+  transition: background 0.15s ease;
+}
+
+.party-list-table tr.clickable-row {
+  cursor: pointer;
+}
+
+.party-list-table tr.clickable-row:hover td {
+  background: var(--tally-selected);
+  color: var(--tally-text-white);
+}
+
+.party-list-table tr.clickable-row:hover .party-row-name {
+  color: var(--tally-accent);
+}
+
+.party-row-name {
+  font-weight: 600;
+  color: var(--tally-text-primary);
+}
+
+.party-row-group {
+  font-size: 11px;
+  color: var(--tally-text-secondary);
+  margin-top: 2px;
+}
+
+/* ═══════════════════════════════════════════════════
+   LEDGER STATEMENT TABLE — Professional Single-line
+═══════════════════════════════════════════════════ */
+.ledger-statement-table {
+  width: 100%;
+  border-collapse: collapse;
+  flex: 1;
+  font-size: 13px;
+}
+
+.ledger-statement-table th {
+  padding: 9px 10px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  position: sticky;
+  top: 0;
+  background: #0d1f1a;
+  z-index: 10;
+  border-bottom: 1px solid #1e3a30;
+  white-space: nowrap;
+}
+
+.ledger-statement-table td {
+  padding: 0;
+  border-bottom: 1px solid rgba(30, 58, 48, 0.6);
+  font-size: 12.5px;
+  height: 36px;
+  vertical-align: middle;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* ── Opening / Closing rows ── */
+.ledger-statement-table .opening-row td,
+.ledger-statement-table .closing-row td {
+  height: 40px;
+  background: #0a1a14;
+  border-top: 2px solid #1a4a38;
+  border-bottom: 2px solid #1a4a38;
+  padding: 0 10px;
+  font-weight: 700;
+  color: #34d399;
+  font-family: var(--font-mono);
+  letter-spacing: 0.2px;
+}
+
+/* ── Transaction rows ── */
+.ledger-statement-table .txn-row {
+  transition: background 0.12s;
+}
+.ledger-statement-table .txn-row:hover td {
+  background: rgba(52, 211, 153, 0.06);
+}
+
+/* ── Individual column styles ── */
+.ledger-statement-table .col-date {
+  padding: 0 10px;
+  font-size: 12px;
+  color: #94a3b8;
+  font-family: var(--font-mono);
+  letter-spacing: 0.2px;
+}
+
+.ledger-statement-table .col-particulars {
+  padding: 0 6px;
+  max-width: 0; /* forces flex children to truncate */
+}
+
+.ledger-statement-table .col-vchno {
+  padding: 0 10px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: #cbd5e1;
+}
+
+.ledger-statement-table .col-dr {
+  padding: 0 10px;
+  text-align: right;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: #f87171;   /* coral red — debit */
+  font-size: 13px;
+}
+
+.ledger-statement-table .col-cr {
+  padding: 0 10px;
+  text-align: right;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: #4ade80;   /* emerald — credit */
+  font-size: 13px;
+}
+
+.ledger-statement-table .col-bal {
+  padding: 0 10px;
+  text-align: right;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 13px;
+}
+.ledger-statement-table .col-bal.bal-dr { color: #f87171; }
+.ledger-statement-table .col-bal.bal-cr { color: #4ade80; }
+.ledger-statement-table .col-bal .bal-type {
+  font-size: 10px;
+  font-weight: 500;
+  opacity: 0.75;
+  margin-left: 2px;
+}
+
+/* ── Particulars two-line layout (Tally ERP style) ── */
+.particulars-main-line {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.particulars-sub-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.particulars-desc {
+  flex: 1 1 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #e2e8f0;
+  font-weight: 500;
+}
+
+/* Bill number badge */
+.bill-no-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 7px;
+  background: rgba(251, 191, 36, 0.12);
+  border: 1px solid rgba(251, 191, 36, 0.28);
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fbbf24;
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+
+/* Bill date info */
+.bill-date-info {
+  font-size: 11px;
+  color: #64748b;
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+
+/* Due amount badge */
+.due-amt-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 8px;
+  background: rgba(251, 146, 60, 0.14);
+  border: 1px solid rgba(251, 146, 60, 0.30);
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fb923c;
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+
+/* Paid badge */
+.paid-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 8px;
+  background: rgba(74, 222, 128, 0.12);
+  border: 1px solid rgba(74, 222, 128, 0.28);
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #4ade80;
+  white-space: nowrap;
+}
+
+.ref-no {
+  flex-shrink: 0;
+  font-size: 10.5px;
+  color: #475569;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+}
+
+/* Legacy classes kept for compatibility */
+.particulars-line {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  overflow: hidden;
+  width: 100%;
+}
+.bill-ref { flex-shrink: 0; font-size: 11px; color: #64748b; white-space: nowrap; }
+.bill-ref .due-amt { color: #fb923c; font-weight: 600; }
+.bill-ref .paid-lbl { color: #4ade80; font-weight: 600; }
+
+/* ── Voucher type pills ── */
+.vch-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 7px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.vch-pill.vch-sales {
+  background: rgba(250, 204, 21, 0.12);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.25);
+}
+.vch-pill.vch-purchase {
+  background: rgba(139, 92, 246, 0.12);
+  color: #a78bfa;
+  border: 1px solid rgba(167, 139, 250, 0.25);
+}
+.vch-pill.vch-receipt {
+  background: rgba(74, 222, 128, 0.10);
+  color: #4ade80;
+  border: 1px solid rgba(74, 222, 128, 0.22);
+}
+.vch-pill.vch-payment {
+  background: rgba(248, 113, 113, 0.10);
+  color: #f87171;
+  border: 1px solid rgba(248, 113, 113, 0.22);
+}
+
+
+/* Bill Status Badges */
+.bill-status-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.bill-status-badge.outstanding {
+  background: rgba(255, 152, 0, 0.2);
+  color: #ffb74d;
+  border: 1px solid rgba(255, 152, 0, 0.3);
+}
+
+.bill-status-badge.partial {
+  background: rgba(33, 150, 243, 0.2);
+  color: #64b5f6;
+  border: 1px solid rgba(33, 150, 243, 0.3);
+}
+
+.bill-status-badge.paid {
+  background: rgba(76, 175, 80, 0.2);
+  color: #81c784;
+  border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+/* Bill Settlement Panel */
+.bill-settlement-panel {
+  margin-top: 16px;
+  padding: 14px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--tally-border-light);
+  border-radius: 6px;
+}
+
+.bill-settlement-panel .panel-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--tally-accent);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bill-settlement-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.bill-settlement-table th {
+  border-bottom: 1px solid var(--tally-border);
+  padding: 6px 8px;
+  font-size: 11px;
+  color: var(--tally-text-secondary);
+  text-transform: uppercase;
+}
+
+.bill-settlement-table td {
+  padding: 8px;
+  border-bottom: 1px solid rgba(0, 121, 107, 0.2);
+  font-size: 13px;
+}
+
+.bill-settlement-table tr:hover td {
+  background: rgba(0, 137, 123, 0.1);
+}
+
+.bill-settlement-table input[type="number"] {
+  width: 100px;
+  padding: 4px 8px;
+  font-size: 13px;
+  text-align: right;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.bill-settlement-table input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--tally-accent);
+  cursor: pointer;
+}
+
+/* Action button row */
+.ledger-action-bar {
+  display: flex;
+  gap: 8px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--tally-border-light);
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.ledger-action-btn {
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ledger-action-btn.primary {
+  background: var(--tally-accent);
+  color: #000;
+  border: none;
+}
+
+.ledger-action-btn.primary:hover {
+  background: #fff176;
+  box-shadow: 0 0 10px rgba(255, 235, 59, 0.3);
+}
+
+.ledger-action-btn.secondary {
+  background: transparent;
+  color: var(--tally-text-secondary);
+  border: 1px solid var(--tally-border-light);
+}
+
+.ledger-action-btn.secondary:hover {
+  background: var(--tally-selected);
+  color: var(--tally-text-white);
+  border-color: var(--tally-border);
+}
+
+.ledger-action-btn.success {
+  background: #4caf50;
+  color: #fff;
+  border: none;
+}
+
+.ledger-action-btn.success:hover {
+  background: #66bb6a;
+}
+
+.ledger-action-btn.danger {
+  background: transparent;
+  color: #ef5350;
+  border: 1px solid rgba(239, 83, 80, 0.3);
+}
+
+.ledger-action-btn.danger:hover {
+  background: rgba(239, 83, 80, 0.15);
+}
+
+/* Search bar for party list */
+.party-search-bar {
+  margin-bottom: 12px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.party-search-bar input {
+  flex: 1;
+  padding: 8px 14px;
+  font-size: 14px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--tally-border-light);
+}
+
+.party-search-bar input:focus {
+  border-color: var(--tally-accent);
+  box-shadow: 0 0 10px rgba(255, 235, 59, 0.2);
+}
+
+/* Payment mode selector */
+.payment-mode-selector {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.payment-mode-btn {
+  padding: 6px 16px;
+  border: 1px solid var(--tally-border-light);
+  background: transparent;
+  color: var(--tally-text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.payment-mode-btn.active {
+  background: var(--tally-accent);
+  color: #000;
+  border-color: var(--tally-accent);
+  box-shadow: 0 0 8px rgba(255, 235, 59, 0.3);
+}
+
+.payment-mode-btn:hover:not(.active) {
+  background: rgba(0, 137, 123, 0.2);
+  color: var(--tally-text-primary);
+  border-color: var(--tally-border);
+}
+
+/* ============================================================
+   PRINT STYLES
+   ============================================================ */
+
+/* Hide print-only elements when rendering on screen */
+@media screen {
+  .tally-print-only {
+    display: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TALLY ERP 9-STYLE FIELD ROWS (Stock Item / Master screens)
+   ═══════════════════════════════════════════════════════ */
+
+.tally-field-row {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  min-height: 34px;
+}
+
+.tally-field-row:hover {
+  background: rgba(0, 121, 107, 0.08);
+}
+
+.tally-field-label {
+  width: 220px;
+  flex-shrink: 0;
+  padding: 6px 12px 6px 16px;
+  font-size: 12.5px;
+  color: #cbd5e1;
+  font-family: 'Courier New', Courier, monospace;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.tally-field-value-wrap {
+  flex: 1;
+  padding: 4px 10px;
+  display: flex;
+  align-items: center;
+}
+
+.tally-field-value {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12.5px;
+  color: #e2e8f0;
+}
+
+.tally-field-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(0, 121, 107, 0.4);
+  color: #ffffff;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12.5px;
+  padding: 3px 4px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.tally-field-input:focus {
+  border-bottom-color: var(--tally-accent);
+  background: rgba(0, 121, 107, 0.08);
+}
+
+.tally-field-input::placeholder {
+  color: #475569;
+  font-style: italic;
+}
+
+.tally-field-select {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(0, 121, 107, 0.4);
+  color: #ffffff;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12.5px;
+  padding: 3px 4px;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.tally-field-select:focus {
+  border-bottom-color: var(--tally-accent);
+  background: rgba(0, 121, 107, 0.08);
+}
+
+.tally-field-select option {
+  background: #0d2318;
+  color: #fff;
+}
+
+.tally-field-input.tally-amt {
+  text-align: right;
+  letter-spacing: 0.5px;
+}
+
+.tally-section-header {
+  padding: 5px 16px;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #fbbf24;
+  background: rgba(0, 0, 0, 0.25);
+  border-bottom: 1px solid rgba(251, 191, 36, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  font-family: 'Courier New', Courier, monospace;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LEDGER PRINT-ONLY COMPANY HEADER
+   Hidden on screen; appears only in print / PDF output.
+   ═══════════════════════════════════════════════════════ */
+.ledger-print-company-header {
+  display: none; /* hidden on screen */
+}
+
+@media print {
+  /* Hide non-printable app components */
+  .tally-header,
+  .tally-footer,
+  .tally-left-pane,
+  .no-print,
+  button,
+  .ledger-action-bar,
+  .party-search-bar,
+  .ledger-summary-bar {
+    display: none !important;
+  }
+
+  /* Reset body and html for printer */
+  body, html {
+    background: #ffffff !important;
+    color: #000000 !important;
+    height: auto !important;
+    overflow: visible !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Expand main containers to full page width */
+  .tally-container, 
+  .tally-body, 
+  .tally-right-pane {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: block !important;
+    overflow: visible !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  /* Hide all sibling elements inside right pane that are not designated as printable */
+  .tally-right-pane > *:not(.printable-area) {
+    display: none !important;
+  }
+
+  /* Format printable area card/element */
+  .printable-area {
+    display: block !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    width: 100% !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Force report tables to be high contrast black-on-white */
+  .printable-area table,
+  .printable-area th,
+  .printable-area td {
+    border-color: #000000 !important;
+    color: #000000 !important;
+    background: transparent !important;
+  }
+
+  .printable-area th {
+    background-color: #f5f5f5 !important;
+    font-weight: bold;
+  }
+
+  .printable-area .report-title {
+    color: #000000 !important;
+  }
+
+  .printable-area .subtitle,
+  .printable-area .report-subtitle {
+    color: #555555 !important;
+  }
+
+  .printable-area .bold-row,
+  .printable-area .total-row,
+  .printable-area tr.total-row td {
+    color: #000000 !important;
+    font-weight: bold !important;
+    border-top: 1.5px solid #000000 !important;
+    border-bottom: 1.5px double #000000 !important;
+  }
+
+  /* Real Tally Invoice high-contrast print layout styling */
+  .tally-invoice-print-layout {
+    display: block !important;
+    width: 100% !important;
+    border: 1px solid #000000;
+    margin: 0;
+    padding: 15px;
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-family: 'JetBrains Mono', 'Courier New', Courier, monospace !important;
+    box-sizing: border-box;
+  }
+
+  .tally-print-only {
+    display: block !important;
+  }
+
+  /* ── Print-only Company Header ── */
+  .ledger-print-company-header {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 12px 0 10px 0;
+    margin-bottom: 12px;
+    border-top: 2.5px solid #000000;
+    border-bottom: 2.5px solid #000000;
+    background: #ffffff !important;
+  }
+
+  .lpch-left {
+    flex: 1;
+  }
+
+  .lpch-company-name {
+    font-size: 18px;
+    font-weight: 800;
+    color: #000000 !important;
+    letter-spacing: 0.4px;
+    margin-bottom: 4px;
+  }
+
+  .lpch-detail {
+    font-size: 11px;
+    color: #333333 !important;
+    margin-top: 2px;
+  }
+
+  .lpch-gstin {
+    font-weight: 700;
+    margin-top: 4px;
+  }
+
+  .lpch-right {
+    text-align: right;
+    flex-shrink: 0;
+    padding-left: 20px;
+  }
+
+  .lpch-doc-type {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #555555 !important;
+    margin-bottom: 4px;
+  }
+
+  .lpch-party-name {
+    font-size: 15px;
+    font-weight: 800;
+    color: #000000 !important;
+  }
+
+  .lpch-period {
+    font-size: 11px;
+    color: #333333 !important;
+    margin-top: 3px;
+  }
+
+  /* ── Outstanding Bills panel — force readable print colours ── */
+  .outstanding-bills-panel {
+    background: #ffffff !important;
+    border: 1.5px solid #000000 !important;
+  }
+
+  .outstanding-panel-header {
+    background: #e8f5e9 !important;
+    border-bottom: 1px solid #000000 !important;
+  }
+
+  .outstanding-panel-title {
+    color: #000000 !important;
+    font-weight: 700 !important;
+  }
+
+  .outstanding-panel-count {
+    color: #000000 !important;
+    background: #fff3e0 !important;
+    border: 1px solid #e65100 !important;
+  }
+
+  .outstanding-bills-table thead tr {
+    background: #f5f5f5 !important;
+  }
+
+  .outstanding-bills-table th {
+    color: #000000 !important;
+    background: #f5f5f5 !important;
+    border-bottom: 1.5px solid #000000 !important;
+  }
+
+  .outstanding-bills-table td,
+  .ob-row-even td,
+  .ob-row-odd td {
+    color: #000000 !important;
+    background: #ffffff !important;
+    border-bottom: 1px solid #cccccc !important;
+  }
+
+  /* Make individual amount cells explicitly black */
+  .outstanding-bills-table td[style],
+  .ob-total-row td[style] {
+    color: #000000 !important;
+  }
+
+  .ob-total-row td {
+    background: #e8f5e9 !important;
+    border-top: 2px solid #000000 !important;
+    color: #000000 !important;
+  }
+
+  .ob-pct-label {
+    color: #333333 !important;
+  }
+
+  .ob-progress-bar {
+    background: #dddddd !important;
+  }
+
+  .ob-progress-fill {
+    background: #2e7d32 !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   OUTSTANDING BILLS PANEL — Tally ERP Style
+   ═══════════════════════════════════════════════════════ */
+.outstanding-bills-panel {
+  border: 1px solid rgba(0, 121, 107, 0.4);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #051a12;
+}
+
+.outstanding-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: rgba(0, 121, 107, 0.18);
+  border-bottom: 1px solid rgba(0, 121, 107, 0.35);
+}
+
+.outstanding-panel-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #2dd4bf;
+  letter-spacing: 0.3px;
+}
+
+.outstanding-panel-count {
+  font-size: 11px;
+  font-weight: 600;
+  color: #fb923c;
+  background: rgba(251, 146, 60, 0.12);
+  border: 1px solid rgba(251, 146, 60, 0.3);
+  border-radius: 12px;
+  padding: 2px 10px;
+}
+
+.outstanding-bills-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.outstanding-bills-table thead tr {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.outstanding-bills-table th {
+  padding: 8px 10px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  border-bottom: 1px solid rgba(0, 121, 107, 0.3);
+}
+
+.outstanding-bills-table td {
+  padding: 10px 10px;
+  font-size: 13px;
+  vertical-align: middle;
+  border-bottom: 1px solid rgba(0, 121, 107, 0.12);
+}
+
+.ob-row-even td { background: rgba(0, 0, 0, 0.15); }
+.ob-row-odd td  { background: rgba(0, 121, 107, 0.05); }
+.outstanding-bills-table tbody tr:hover td {
+  background: rgba(0, 137, 123, 0.15) !important;
+  cursor: default;
+}
+
+/* Progress bar */
+.ob-progress-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.ob-progress-bar {
+  width: 70px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.ob-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4ade80, #22c55e);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+.ob-pct-label {
+  font-size: 10px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+/* Total footer row */
+.ob-total-row td {
+  background: rgba(0, 121, 107, 0.22) !important;
+  border-top: 2px solid rgba(0, 121, 107, 0.5) !important;
+  border-bottom: none !important;
+  padding: 10px 10px;
+  font-size: 13px;
+}
